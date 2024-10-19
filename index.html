@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000;
+            color: #ffffff;
+            background-image: url('img2.jpg');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        header {
+            background: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 24px;
+            display: inline-block;
+        }
+
+        .help-button {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            background: #FFD700; /* Original color */
+            color: black;
+            border: none;
+            padding: 3px 6px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 600px;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+            background: #444444; /* Original input background */
+            color: #ffffff;
+            border: 1px solid #555555;
+            transition: background 0.3s;
+        }
+
+        button {
+            background-color: #FFD700; /* Original button color */
+            color: black;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #FFC107; /* Hover effect */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Currency Converter</h1>
+        <button class="help-button" id="help-button">Help</button>
+    </header>
+
+    <div class="container" id="initial-container">
+        <h2>Enter Amount</h2>
+        <form id="amount-form">
+            <label for="amount">Amount:</label>
+            <input type="number" id="amount" name="amount" required>
+            <button type="submit">Next</button>
+        </form>
+
+        <button id="live-exchanges-button">Live Exchanges</button> <!-- New button added -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const amountForm = document.getElementById('amount-form');
+            const amountInput = document.getElementById('amount');
+            const helpButton = document.getElementById('help-button');
+            const liveExchangesButton = document.getElementById('live-exchanges-button');
+
+            amountForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const amount = amountInput.value;
+                if (amount) {
+                    window.localStorage.setItem('amount', amount);
+                    window.open('currency-selection.html', '_blank');
+                }
+            });
+
+            helpButton.addEventListener('click', function() {
+                alert('This is a Currency Converter Web App. You can convert currencies and get information about available currencies.');
+            });
+
+            liveExchangesButton.addEventListener('click', function() {
+                window.open('live-exchanges.html', '_blank'); // Link to live exchanges page
+            });
+        });
+    </script>
+</body>
+</html>

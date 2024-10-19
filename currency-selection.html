@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currency Converter - Selection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #000000; /* Fallback color */
+            color: #ffffff; /* White text color for contrast */
+            background-image: url('img2.jpg'); /* Path to your background image */
+            background-size: cover; /* Cover the entire viewport */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-position: center; /* Center the image */
+            background-attachment: fixed; /* Fix the image in place */
+        }
+
+        .container {
+            background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input, select, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            max-width: 300px;
+            box-sizing: border-box;
+            background: #444444; /* Darker gray background for input fields */
+            color: #ffffff; /* White text color for input fields */
+            border: 1px solid #555555; /* Slightly lighter gray border */
+        }
+
+        button {
+            background-color: #FFD700; /* Gold color for the button */
+            color: black; /* Black text color for better contrast on gold */
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #FFC107; /* Slightly darker gold on hover */
+        }
+
+        #result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Currency Converter</h1>
+        <form id="converter-form">
+            <label for="from-currency">From Currency:</label>
+            <select id="from-currency" name="from-currency">
+                <!-- Options will be added dynamically -->
+            </select>
+
+            <br><label for="to-currency">To Currency:</label>
+            <select id="to-currency" name="to-currency">
+                <!-- Options will be added dynamically -->
+            </select>
+
+            <button type="submit">Convert</button>
+        </form>
+        <div id="result">
+            <!-- Conversion result will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('converter-form');
+            const fromCurrencySelect = document.getElementById('from-currency');
+            const toCurrencySelect = document.getElementById('to-currency');
+            const resultDiv = document.getElementById('result');
+
+            const API_URL = 'https://api.exchangerate-api.com/v4/latest/USD'; // Example API
+
+            async function fetchCurrencies() {
+                try {
+                    const response = await fetch(API_URL);
+                    const data = await response.json();
+                    const currencies = Object.keys(data.rates);
+
+                    currencies.forEach(currency => {
+                        const option = document.createElement('option');
+                        option.value = currency;
+                        option.textContent = currency;
+                        fromCurrencySelect.appendChild(option.cloneNode(true));
+                        toCurrencySelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching currencies:', error);
+                }
+            }
+
+            async function convertCurrency(amount, fromCurrency, toCurrency) {
+                try {
+                    const response = await fetch(API_URL);
+                    const data = await response.json();
+                    const rate = data.rates[toCurrency] / data.rates[fromCurrency];
+                    return (amount * rate).toFixed(2);
+                } catch (error) {
+                    console.error('Error converting currency:', error);
+                    return 'Error';
+                }
+            }
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const amount = window.localStorage.getItem('amount');
+                const fromCurrency = fromCurrencySelect.value;
+                const toCurrency = toCurrencySelect.value;
+
+                if (amount && fromCurrency && toCurrency) {
+                    const result = await convertCurrency(amount, fromCurrency, toCurrency);
+                    resultDiv.textContent = `${amount} ${fromCurrency} = ${result} ${toCurrency}`;
+                } else {
+                    resultDiv.textContent = 'Please select currencies.';
+                }
+            });
+
+            window.addEventListener('message', function(event) {
+                window.localStorage.setItem('amount', event.data);
+            });
+
+            fetchCurrencies();
+        });
+    </script>
+</body>
+</html>
